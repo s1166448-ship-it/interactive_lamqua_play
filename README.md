@@ -1,1 +1,445 @@
-# interactive_lamqua_play
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>学习活动 | 林呱如何画出从未见过的西方女性？</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #9b1b1b; /* 故宫红 */
+            font-family: 'Georgia', 'Times New Roman', '宋体', serif;
+            padding: 2rem 1.5rem;
+            color: #f9f3e2;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        /* 头部 */
+        .activity-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,235,200,0.3);
+            padding-bottom: 1rem;
+        }
+        .activity-header h1 {
+            font-size: 1.9rem;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        .activity-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-top: 0.5rem;
+        }
+        .sub {
+            font-style: italic;
+            color: #f5e2c1;
+        }
+
+        /* 画作信息栏 */
+        .artwork-info {
+            background: rgba(0,0,0,0.25);
+            border-radius: 24px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.8rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+        .artwork-info span {
+            color: #f5d79e;
+        }
+
+        /* 双图对比区 */
+        .compare-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin: 2rem 0;
+            justify-content: center;
+        }
+        .figure {
+            flex: 1;
+            min-width: 260px;
+            background: #2c1a1a;
+            border-radius: 28px;
+            padding: 1rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .figure:hover {
+            transform: translateY(-5px);
+        }
+        .figure img {
+            width: 100%;
+            max-height: 380px;
+            object-fit: contain;
+            border-radius: 16px;
+            background: #e9d9c4;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .fig-caption {
+            margin-top: 12px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #efd5a7;
+        }
+        .fig-caption small {
+            font-weight: normal;
+            font-size: 0.75rem;
+        }
+
+        /* 线索卡片区域 */
+        .clues-section {
+            margin: 2.5rem 0;
+        }
+        .clues-title {
+            text-align: center;
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+        .clue-card {
+            background: #7a2e2e;
+            border-radius: 32px;
+            padding: 1.2rem 1.5rem;
+            flex: 1;
+            min-width: 240px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid #b97f4b;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .clue-card:hover {
+            background: #8f3a3a;
+            transform: scale(0.98);
+            border-color: #f0bc7a;
+        }
+        .clue-card h4 {
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: #ffeaab;
+        }
+        .clue-summary {
+            font-size: 0.9rem;
+            font-weight: normal;
+            color: #fcedcf;
+        }
+        .full-text {
+            display: none;
+            margin-top: 14px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            background: #5f2525;
+            padding: 12px;
+            border-radius: 20px;
+            color: #fff2e0;
+            border-left: 3px solid #ffcd94;
+        }
+        .clue-card.active .full-text {
+            display: block;
+        }
+
+        /* 对比按钮 */
+        .compare-wrapper {
+            text-align: center;
+            margin: 2rem 0 1rem;
+        }
+        .compare-btn {
+            background: #e2b87a;
+            border: none;
+            color: #4a1a1a;
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 12px 28px;
+            border-radius: 60px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        .compare-btn:hover {
+            background: #f7cf97;
+            transform: scale(1.02);
+        }
+        .compare-result {
+            background: #2f1e1e;
+            border-radius: 28px;
+            padding: 1rem 1.8rem;
+            margin: 1rem auto;
+            max-width: 700px;
+            border-left: 5px solid #e2b87a;
+            font-size: 0.95rem;
+            display: none;
+        }
+        .compare-result.show {
+            display: block;
+        }
+
+        /* 留言板 */
+        .message-board {
+            background: #631f1f;
+            border-radius: 36px;
+            padding: 1.8rem;
+            margin: 2rem 0 1.5rem;
+        }
+        .message-board h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .reflection-quote {
+            font-style: italic;
+            background: #4d1f1f;
+            padding: 1rem;
+            border-radius: 28px;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+        textarea {
+            width: 100%;
+            padding: 12px;
+            font-family: inherit;
+            background: #fff4e8;
+            border: none;
+            border-radius: 28px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+            resize: vertical;
+        }
+        button.submit-msg {
+            background: #eedba7;
+            color: #3e1414;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-right: 12px;
+        }
+        .message-list {
+            margin-top: 25px;
+            max-height: 320px;
+            overflow-y: auto;
+        }
+        .msg-item {
+            background: #4e2323;
+            border-radius: 24px;
+            padding: 10px 16px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            border-left: 3px solid #f3c48f;
+        }
+        .msg-time {
+            font-size: 0.7rem;
+            color: #eac28e;
+            display: block;
+            margin-top: 6px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 780px) {
+            body {
+                padding: 1rem;
+            }
+            .clue-card {
+                min-width: 100%;
+            }
+            .figure img {
+                max-height: 280px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="activity-header">
+        <h1>How Did Lamqua Paint a Woman He Never Saw?</h1>
+        <p>Lamqua never left China. He never saw a Western woman in person. Yet he painted this. <span class="sub">How?</span></p>
+    </div>
+
+    <!-- 画作基本信息 -->
+    <div class="artwork-info">
+        <div>🎨 <span>Lamqua (Guan Qiaochang)</span> — <em>The Grand Odalisque after Ingres</em>, c. 1840s, oil on canvas</div>
+        <div>🖼️ <span>Jean-Auguste-Dominique Ingres</span> — <em>Grande Odalisque</em> (also known as <em>Une Odalisque</em> or <em>La Grande Odalisque</em>), 1814, oil on canvas. Commissioned by Napoleon Bonaparte's sister, Queen Caroline Murat of Naples. Ingres' contemporaries considered the work a break from Neoclassicism, indicating a shift toward exotic Romanticism.</div>
+    </div>
+
+    <!-- 双图对比 -->
+    <div class="compare-row">
+        <div class="figure">
+            <img id="lamquaImg" src="https://raw.githubusercontent.com/s1166448-ship-it/interactive_lamqua_play/main/%E8%A5%BF%E6%B4%8B%E5%A5%B3.png" alt="Lamqua - Grand Odalisque">
+            <div class="fig-caption">🎨 Lamqua · <em>The Grand Odalisque after Ingres</em><br><small>Chinese export painter, never left China</small></div>
+        </div>
+        <div class="figure">
+            <img id="ingresImg" src="https://raw.githubusercontent.com/s1166448-ship-it/interactive_lamqua_play/main/%E5%AE%89%E6%A0%BC%E5%B0%94.jpg" alt="European copperplate print - Ingres">
+            <div class="fig-caption">🖼️ European Copperplate Print · after Ingres<br><small>(black & white, left-right reversed)</small></div>
+        </div>
+    </div>
+
+    <!-- 线索卡片 -->
+    <div class="clues-section">
+        <div class="clues-title">🔍 Click each clue to reveal the story</div>
+        <div class="card-container">
+            <div class="clue-card" data-id="ban">
+                <h4>🚫 No Western Women in Guangzhou</h4>
+                <div class="clue-summary">Before 1842, Western women were forbidden. A British officer’s wife was expelled → painters had no live models.</div>
+                <div class="full-text">Before the Treaty of Nanjing in 1842, the Qing government strictly forbade Western women from entering Guangzhou. Every foreign ship entering the port was required to report the exact number of people on board — no one could be added or removed. When a British officer once secretly brought his wife into Guangzhou, both were discovered and expelled. This meant that Chinese export painters like Lamqua had never seen a Western woman in person. They had no live models to study. All they had to work with were prints and engravings brought by foreign merchants.</div>
+            </div>
+            <div class="clue-card" data-id="trade">
+                <h4>🔄 Prints for Paintings</h4>
+                <div class="clue-summary">Foreign merchants traded European prints for Chinese paintings. Lamqua received engravings — including Ingres’ Odalisque — and copied them in oil.</div>
+                <div class="full-text">Foreign merchants often brought European prints and engravings to Guangzhou. In Lamqua's studio, a unique exchange took place: merchants traded Western prints for Chinese-style paintings, which were then shipped back to Europe and sold for profit. Through this system, Lamqua obtained a wide range of Western images — mythological scenes, portraits, and engravings of famous paintings, including Ingres' <em>Grande Odalisque</em>. He then made oil copies of them in his studio. This "prints for paintings" system was not just a trade in goods. It was also a trade in images across continents.</div>
+            </div>
+            <div class="clue-card" data-id="copy">
+                <h4>🎨 Copying Without Seeing</h4>
+                <div class="clue-summary">The print was black‑and‑white and reversed. Lamqua kept the famous elongated spine — copying the print, not the real body.</div>
+                <div class="full-text">The European print that Lamqua copied was not only black and white — it was also reversed left to right, a common feature of copperplate engraving. Lamqua painted his version in oil, added his own colors, and carefully signed his name. He did not want anyone to mistake his work for a European original. Interestingly, he also copied the "mistakes" from the print. Ingres' original <em>Grande Odalisque</em> is famous for its elongated spine — three extra vertebrae. The print had this feature, and Lamqua faithfully reproduced it. Without ever seeing the original painting — or a real Western woman — he recreated a Western masterpiece from a reversed, colorless print.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 对比按钮区域 -->
+    <div class="compare-wrapper">
+        <button class="compare-btn" id="compareBtn">🔎 Compare · The Elongated Spine</button>
+    </div>
+    <div id="compareResult" class="compare-result">
+        ✨ Ingres' original painting has a longer spine — <strong>three extra vertebrae</strong>.<br>
+        Lamqua kept this feature in his copy. <strong>Why?</strong> Because he was copying the print, not the real thing.<br>
+        He painted exactly what the print showed him — including the "mistake". Faithful reproduction, not anatomical reality.
+    </div>
+
+    <!-- 留言板 + 反思问题（修正版） -->
+    <div class="message-board">
+        <h3>💬 Reflection & Share</h3>
+        <div class="reflection-quote">
+            ❓ <strong>Reflection Question</strong><br>
+            <em>Ingres' Grande Odalisque (1814) was commissioned by Napoleon Bonaparte's sister, Queen Caroline Murat of Naples. It depicts a fictional concubine in an imagined Ottoman court — a Western fantasy of the "exotic Orient." Lamqua, a Chinese artist who never left China, later copied this Western imagining of the East from a black-and-white print, without ever seeing the original. What happens when an image of an "imagined East" — created by the West — is copied by someone from the actual East (China)? What gets lost? What gets added? And whose "Orient" are we looking at?</em>
+        </div>
+        <textarea id="userMessage" rows="2" placeholder="Write your thoughts here... (English or Chinese)"></textarea>
+        <button class="submit-msg" id="submitMsgBtn">📝 Leave your voice</button>
+        <div class="message-list" id="messageList">
+            <div style="text-align:center; color:#eccf9f;">— 观众留言将出现在这里 —</div>
+        </div>
+    </div>
+    <footer>Exhibition: How They Were Seen · Learning Activity · Lamqua's Gaze</footer>
+</div>
+
+<script>
+    // 线索卡片 toggle
+    const cards = document.querySelectorAll('.clue-card');
+    cards.forEach(card => {
+        card.addEventListener('click', (e) => {
+            card.classList.toggle('active');
+        });
+    });
+
+    // 对比按钮
+    const compareBtn = document.getElementById('compareBtn');
+    const compareResultDiv = document.getElementById('compareResult');
+    compareBtn.addEventListener('click', () => {
+        compareResultDiv.classList.toggle('show');
+    });
+
+    // 留言板 localStorage 保存与加载
+    let messages = [];
+
+    function loadMessages() {
+        const stored = localStorage.getItem('lamqua_activity_messages');
+        if(stored) {
+            try {
+                messages = JSON.parse(stored);
+            } catch(e) { console.warn(e); }
+        }
+        renderMessages();
+    }
+
+    function saveMessages() {
+        localStorage.setItem('lamqua_activity_messages', JSON.stringify(messages));
+    }
+
+    function renderMessages() {
+        const container = document.getElementById('messageList');
+        if(!messages.length) {
+            container.innerHTML = '<div style="text-align:center; color:#eccf9f; padding: 10px;">✨ No messages yet. Be the first to reflect.</div>';
+            return;
+        }
+        const reversed = [...messages].reverse();
+        container.innerHTML = reversed.map(msg => `
+            <div class="msg-item">
+                “${escapeHtml(msg.text)}”
+                <div class="msg-time">📝 ${msg.time}</div>
+            </div>
+        `).join('');
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function addMessage(text) {
+        if(!text.trim()) {
+            alert('Please write something before leaving your voice.');
+            return false;
+        }
+        const newMsg = {
+            id: Date.now(),
+            text: text.trim(),
+            time: new Date().toLocaleString('en-US', {hour12: false})
+        };
+        messages.push(newMsg);
+        saveMessages();
+        renderMessages();
+        return true;
+    }
+
+    const submitBtn = document.getElementById('submitMsgBtn');
+    const userInput = document.getElementById('userMessage');
+    submitBtn.addEventListener('click', () => {
+        const text = userInput.value;
+        if(addMessage(text)) {
+            userInput.value = '';
+        }
+    });
+
+    // 图片加载失败时的占位处理
+    const lamquaImg = document.getElementById('lamquaImg');
+    const ingresImg = document.getElementById('ingresImg');
+    lamquaImg.onerror = () => { lamquaImg.alt = 'Image not loaded'; lamquaImg.style.background = '#b98a6b'; };
+    ingresImg.onerror = () => { ingresImg.alt = 'Image not loaded'; ingresImg.style.background = '#b98a6b'; };
+
+    loadMessages();
+</script>
+</body>
+</html>
